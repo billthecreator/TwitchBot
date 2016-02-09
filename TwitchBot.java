@@ -8,6 +8,7 @@ public class TwitchBot extends PircBot{
     static TwitchBot bot = new TwitchBot();
     
     static final String MY_CHANNEL = "";
+    static final String MY_NAME = "";
     static final String BOT_NAME = "";
     static final String TWITCH_IRC = "irc.twitch.tv";
     static final String TWITCH_OAUTH = "";
@@ -24,6 +25,7 @@ public class TwitchBot extends PircBot{
         bot.setVerbose(true);
         
         // Connect to the IRC server.
+        // to prevent duplication
         try {
             bot.connect(TWITCH_IRC, TWITCH_PORT, TWITCH_OAUTH);
         } catch (NickAlreadyInUseException e) {
@@ -48,10 +50,11 @@ public class TwitchBot extends PircBot{
         String[] messageArray = message.split(" ");
         String command = messageArray[0];
 
-        if (sender.equalsIgnoreCase("rithek")){
+        if (sender.equalsIgnoreCase(MY_NAME)){
             // Commands only for Rithek
             switch(command){
                 case "!question":
+                    // display the next question
                     sendMessage(channel, _getNextQuestions());
                     return;
                 case "":
@@ -64,6 +67,7 @@ public class TwitchBot extends PircBot{
         
         switch(command){
             case "!currentquestion":
+                // display the current question
                 sendMessage(channel, _getCurrentQuestion());
                 return;
             default:break;
