@@ -94,7 +94,7 @@ public class TwitchBot extends PircBot{
         
         currentQuestion = randomQuestion;
         currentQuestionPosition = randomNumber;
-        return "";
+        return currentQuestion;
     }
     private String _getCurrentQuestion(){
         return currentQuestion;
