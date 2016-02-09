@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jibble.pircbot.*;
 
 public class TwitchBot extends PircBot{
@@ -28,6 +30,10 @@ public class TwitchBot extends PircBot{
     static ArrayList<String> questionArray = new ArrayList();
     static String currentQuestion = "";
     static double currentQuestionPosition = -1;
+    
+    //
+    static final String PB_FILE_LOCATION = "pb.txt";
+    static ArrayList<String> PBsArray = new ArrayList();
 
     public static void main(String[] args) throws Exception {
         
@@ -53,9 +59,7 @@ public class TwitchBot extends PircBot{
     }
     
     
-    public TwitchBot(){
-        this.setName(BOT_NAME);
-    }
+    public TwitchBot(){this.setName(BOT_NAME);}
     
     
     @Override
@@ -71,16 +75,51 @@ public class TwitchBot extends PircBot{
                 case "!question":
                     // display the next question
                     sendMessage(channel, _getNextQuestion());
-                    return;
+                    break;
                 default:break;
 
             }
         }
         // commands for everyone in chat
         switch(command){
-            case "!currentquestion":
-                // display the current question
+            case "!currentquestion": // display the current question
                 sendMessage(channel, _getCurrentQuestion());
+            case "!frames":
+            case "!mac": // mac quotes
+            case "!pb":
+                try{
+                    String type = messageArray[1];
+                    _getPBs(PB_FILE_LOCATION);
+                    switch(type){
+                        case "apr":
+                            sendMessage(channel,PBsArray.get(0) + "\n" +
+                                                PBsArray.get(1));break;
+                        case "425":      
+                            sendMessage(channel,PBsArray.get(2));break;
+                        case "arm":      
+                            sendMessage(channel,PBsArray.get(3));break;
+                        case "peak":     
+                            sendMessage(channel,PBsArray.get(4));break;
+                        case "snow":    
+                            sendMessage(channel,PBsArray.get(5));break;
+                        case "metro":    
+                            sendMessage(channel,PBsArray.get(6));break;
+                        case "intim":
+                            sendMessage(channel,PBsArray.get(7));break;
+                        case "throne":   
+                            sendMessage(channel,PBsArray.get(8));break;
+                        default:
+                            sendMessage(channel,"!pb [apr, 425, arm, peak, snow, metro, intim, throne]");
+                            break;
+                    }
+                } catch(ArrayIndexOutOfBoundsException e){
+                } catch (FileNotFoundException ex) {}  
+                
+            case "":
+            case "!qcommands":
+                sendMessage(channel,    "!currentquestion\n" +
+                                        "!pb [apr, 425, arm, peak, snow, metro, intim, throne]\n" +
+                                        "");
             default:break;
 
         }
@@ -90,12 +129,29 @@ public class TwitchBot extends PircBot{
         with txt file, get the list of questions separated by a new line
     */
     private static void _getQuestions(String file) throws FileNotFoundException{
-        
+        // Avoid apending
+        questionArray.clear();
         // Try to read the file.
         // Cycle through each line, adding it to the array
-        try (Scanner inFile = new Scanner(new File(FILE_LOCATION))) {
+        try (Scanner inFile = new Scanner(new File(file))) {
             while (inFile.hasNextLine()){
                 questionArray.add(inFile.next());
+            }
+        } catch (FileNotFoundException e){
+            System.err.println("Can't find the file: " + file);
+        }
+    }
+    /*
+        _getPBs
+    */
+    private static void _getPBs(String file) throws FileNotFoundException{
+        // Avoid apending
+        PBsArray.clear();
+        // Try to read the file.
+        // Cycle through each line, adding it to the array
+        try (Scanner inFile = new Scanner(new File(file))) {
+            while (inFile.hasNextLine()){
+                PBsArray.add(inFile.next());
             }
         } catch (FileNotFoundException e){
             System.err.println("Can't find the file: " + file);
@@ -118,10 +174,15 @@ public class TwitchBot extends PircBot{
         int randomNumber = Integer.parseInt(
                 Math.floor(Math.random() * questionArray.size()) + "");
         // grab question with random number ^
-        String randomQuestion = questionArray.get(randomNumber);
         
-        currentQuestion = randomQuestion;
-        currentQuestionPosition = randomNumber;
+        try{
+            String randomQuestion = questionArray.get(randomNumber);
+            currentQuestion = randomQuestion;
+            currentQuestionPosition = randomNumber;
+        } catch(ArrayIndexOutOfBoundsException e){
+            currentQuestion = "No more questions to display!";
+            currentQuestionPosition = -1;
+        }        
         
         // TODO - clear timer
         //      - set time for 5 minutes
