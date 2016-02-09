@@ -55,7 +55,7 @@ public class TwitchBot extends PircBot{
             switch(command){
                 case "!question":
                     // display the next question
-                    sendMessage(channel, _getNextQuestions());
+                    sendMessage(channel, _getNextQuestion());
                     return;
                 case "":
                     
@@ -86,7 +86,14 @@ public class TwitchBot extends PircBot{
         }
         inFile.close();
     }
-    private String _getNextQuestions(){
+    /*
+        _getNextQuestion
+        Remove the last question, unless it's the first time.
+        Randomly pick from the array and display that question,
+        and set the current position to remove when this method is called
+        again.
+    */
+    private String _getNextQuestion(){
         
         // remove the last question from array
         if (currentQuestionPosition >= 0 ) {
@@ -98,9 +105,23 @@ public class TwitchBot extends PircBot{
         
         currentQuestion = randomQuestion;
         currentQuestionPosition = randomNumber;
+        
+        // TODO - clear timer
+        //      - set time for 5 minutes
+        
         return currentQuestion;
     }
+    /*
+        _getCurrentQuestion
+        Return the current question.
+        // Needs better handling for spam
+        // add a delay **
+    */
     private String _getCurrentQuestion(){
+        
+        // Is timer cleared?
+        // Is timer past 5 minutes?
+        
         return currentQuestion;
     }
     
