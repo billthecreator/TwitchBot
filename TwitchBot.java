@@ -112,8 +112,10 @@ public class TwitchBot extends PircBot{
                             sendMessage(channel,"!pb [apr, 425, arm, peak, snow, metro, intim, throne]");
                             break;
                     }
-                } catch(ArrayIndexOutOfBoundsException e){
-                } catch (FileNotFoundException ex) {}  
+                } catch(ArrayIndexOutOfBoundsException e){                    
+                    sendMessage(channel,"!pb [apr, 425, arm, peak, snow, metro, intim, throne]");
+                } catch (FileNotFoundException ex) {
+                }  
                 
             case "":
             case "!qcommands":
