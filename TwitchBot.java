@@ -64,7 +64,7 @@ public class TwitchBot extends PircBot{
 
             }
         }
-        
+        // commands for everyone
         switch(command){
             case "!currentquestion":
                 // display the current question
